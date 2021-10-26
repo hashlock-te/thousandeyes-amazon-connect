@@ -1,0 +1,52 @@
+service: monitor
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+
+
+resources:
+  Parameters: 
+      ThousandEyesUser: 
+        Default: "hashlock@thousandeyes.com"
+        Description: ThousandEyes user email
+        Type: String
+      ThousandEyesUserToken: 
+        Default: "ncea6wpdaeps5vnxwpmc1eo0tvkjb5p5"
+        Description: ThousandEyes user API token
+        Type: String
+        MinLength: 32
+        MaxLength: 32
+        AllowedPattern : "[A-Za-z0-9]*"
+        NoEcho: true
+
+functions:
+  endpoint:
+    handler: handler.endpoint
+    environment:
+      TE_USER: 
+        Ref: ThousandEyesUser
+      TE_TOKEN: 
+        Ref: ThousandEyesUserToken
+    events:
+      - http:
+          path: /endpoint
+          method: get
+          # this cors doesn't seem to be working
+          cors:
+            origin: '*'
+  status:
+    handler: handler.status
+    events:
+      - http:
+          path: /status
+          method: get
+          # this cors doesn't seem to be working
+          cors:
+            origin: '*'
