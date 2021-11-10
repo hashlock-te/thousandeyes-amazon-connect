@@ -23,11 +23,13 @@ Once you've deployed at least one ThousandEyes Endpoint Agent you'll want to con
 3) Select "Add New Test" and create a new "Web - HTTP Server" test
 4) In the **URL** field enter the URL of your Amazon Connect service. For example `https://acmebusiness.my.connect.aws`.  
 5) Name the test `AmazonConnect` or something similar. You will use this name when setting up the client widget (see below)
+   
 ![picture 6](readme/4afef72d2e22df4fa144f4786af74bc24416362565f1d3d2b411539eaeb50157.png)  
-6) In the **Agents** field select the Endpoint Agents you installed in the previous step. 
+1) In the **Agents** field select the Endpoint Agents you installed in the previous step. 
+   
 ![picture 2](readme/21828ef52af6622212d8453046bd3d395245bf391fe90b968538968978af57ab.png)  
-7) Select **Add New Test** in the lower right.
-8) Also note the Account Group name that you created this test in, you will use it below.
+1) Select **Add New Test** in the lower right.
+2) Also note the Account Group name that you created this test in, you will use it below.
 ### Enable ThousandEyes Session Monitorintg
 Next you'll want to enable session monitoring when the user is using the Amazon Connect web client. 
 1) Click on **Browser Session Settings** --> **Monitored Domain Sets** --> Add New Monitored Domain Set
