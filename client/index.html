@@ -26,28 +26,42 @@
       var i;
       var x = document.getElementsByClassName(tabClass); // teTab
       for (i = 0; i < x.length; i++) {
-        // x[i].style.display = "none";  
         if (x[i].id != tabId) {
           x[i].classList.remove("show");
         }
       }
-      // document.getElementById(tabId).style.display = "block";  
       document.getElementById(tabId).classList.toggle("show");
     }
 
     function showTab(tabId, tabClass) {
       var i;
       var x = document.getElementsByClassName(tabClass); // teTab
-      for (i = 0; i < x.length; i++) {
-        // x[i].style.display = "none";  
+      for (i = 0; i < x.length; i++) {  
         if (x[i].id != tabId) {
-          x[i].classList.toggle("hide")
-          // style.display = "none";
+          x[i].classList.toggle("hide");
         }
-      }
-      // document.getElementById(tabId).style.display = "block";  
+      } 
       document.getElementById(tabId).classList.toggle("show");
     }
+
+    function saveAgent() {
+      setCookie ("accountName", $('#accountName').val(), 999);
+      setCookie ("hostName", $('#hostName').val(), 999);
+      setCookie ("testName", $('#testName').val(), 999);
+    }
+
+    function updateFromCookie (name, defaultValue) {
+      let val = getCookie(name) ??  defaultValue;
+      $(`#${name}`).val(val);
+      setCookie(name, val);
+    }
+
+    function initAgent (accountName, hostName, testName) {
+      updateFromCookie ("accountName", accountName);
+      updateFromCookie ("hostName", hostName);
+      updateFromCookie ("testName", testName);
+    }
+
     </script>
 
   </head>
@@ -96,18 +110,12 @@
       }
 
       #teDash {
-        /* margin-left: 0px; */
-        /* width: 600px; */
         width: 260px;
         height: 200px;
         border: 1px;
         border-color: rgb(224, 224, 224);
         border-radius: 2px;
-        /* border-style: solid; */
-        /* float: left; */
-        /* background: lightgrey; */
         padding: 5px;
-        /* overflow: hidden; */
       }
 
       .teMetricItem {
@@ -120,13 +128,6 @@
         padding: 5px;
         font-family: monospace;
         color: grey;
-        /* display: flex;
-        justify-content: left;
-        align-content: left;
-        flex-direction: column;
-        vertical-align: middle;
-        text-align: left; */
-
       }
 
       .teMetric {
@@ -139,13 +140,6 @@
         width: 75px;
         height: 20px;
         text-align: center;
-        /* 
-        vertical-align: middle;
-        display: flex;
-        justify-content: center;
-        align-content: center;
-        flex-direction: column;
-        align-items: right; */
       }
 
 
@@ -161,13 +155,6 @@
         border: none; 
         background: none;
       }
-
-      #display_loading {
-        /* position: relative;
-    		top: 50%;
-    		left: 50%; */
-    		/* transform: translate(-50%, 50%); */
-    	}
 
       .teText {
         font-family: sans-serif; 
@@ -191,37 +178,15 @@
         padding: 5px 0;
         border-radius: 6px;
       
-        /* Position the tooltip text - see examples below! */
         position: absolute;
         z-index: 1;
         margin-top: 25px;
-        /* width: 120px;
-        top: 100%;
-        left: 50%;
-        margin-left: -60px;  */
-        /* Use half of the width (120/2 = 60), to center the tooltip */
       }
 
-      /* .tooltip-bottom {
-          top: 135%;
-          left: 50%;
-          margin-left: -60px;
-      } */
-
-      /* Show the tooltip text when you mouse over the tooltip container */
       .tooltip:hover .tooltiptext {
         visibility: visible;
       }
 
-      /* .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        padding: 12px 16px;
-        z-index: 1;
-      } */
 
       .hide {
         display: none;
@@ -252,8 +217,6 @@
       }
 
       #teResponse {
-        /* width: 200px;
-        height: 200px; */
         clear: both;
         padding: 5px;
         margin: 5px;
@@ -276,7 +239,12 @@
       <div id="ccpContainer1">
         <script>
           var instanceURL = "https://te-labs.my.connect.aws/connect/ccp#/";
-          var metricsURL = "https://bqnoz0b8ol.execute-api.us-east-1.amazonaws.com/v1/";
+          var metricsURL = "https://bqnoz0b8ol.execute-api.us-east-1.amazonaws.com/v1";
+          // var metricsURL = "http://localhost:3000/v1";
+          var defaultHostName = "HASHLOCK-M-KJUS";
+          var defaultAccountGroup = "Endpoint Agent";
+          var defaultTestName = "AWS Connect";
+          var refreshS = 30;
           var container = document.getElementById("ccpContainer");
           var ccpURL = instanceURL; //localStorage.getItem('ccpUrl');
           init();
@@ -308,44 +276,48 @@
             </div>
           </div>
           <div id="teSettings" class="teTab teText hide" style="min-height: 100px;">
-            <!-- <div>ThousandEyes Admin Setup</div>  style="padding: 10px;"-->
             <div class="flexRow" >
-              <div class="flexRowItem" style="margin-right:10px;">Username</div>
-              <input class="flexRowItem" style="margin-left:10px;" type="text" id="fUser" name="username" placeholder="User name..">
+              <div class="flexRowItem" style="margin-right:10px;">Host Name</div>
+              <input class="flexRowItem" style="margin-left:10px;" type="text" id="hostName" name="HostName" placeholder="Host Name">
+            </div>
+            <div class="flexRow" >
+              <div class="flexRowItem" style="margin-right:10px;">Account Group</div>
+              <input class="flexRowItem" style="margin-left:10px;" type="text" id="accountName" name="AccountName" placeholder="Account Name">
+            </div>
+            <div class="flexRow" >
+              <div class="flexRowItem" style="margin-right:10px;">Test Name</div>
+              <input class="flexRowItem" style="margin-left:10px;" type="text" id="testName" name="TestName" placeholder="Test Name">
             </div>
             <div class="flexRow">
-              <div class="flexRowItem" style="margin-right:10px;">API Token</div>
-              <input class="flexRowItem" style="margin-left:10px;" type="text" id="fPass" name="password" placeholder="API Token">
-            </div>
-            <div class="flexRow">
-              <button class="flexRowItem" style="align-self: right;">Login</button>
+              <button class="flexRowItem" style="align-self: right; margin: 2px;" onclick="saveAgent()">Set</button>
             </div>
           </div>
           <div class="flexRow" style="justify-content: flex-end;">
             <button class="flexRowItem teButton tooltip" style="align-self: flex-end;" onclick="showTab('teSettings', 'teTab')">
-              <span class="tooltiptext">User Settings</span>
-              <img style="display:flex;" src="images/gear.png" height="15px"></img> 
-            </button>
-            <button class="flexRowItem teButton tooltip" style="align-self: flex-end;" onclick="showTab('teSettings', 'teTab')">
-              <span class="tooltiptext">Admin Settings</span>
+              <span class="tooltiptext">Agent Settings</span>
               <img style="display:flex;" src="images/gear.png" height="15px"></img> 
             </button>
           </div>
-          <div id="teResponse">.</div>
           <script>
-
+            initAgent (defaultAccountGroup, defaultHostName, defaultTestName);
+            teAgentInfo (getCookie("hostName"), getCookie("accountName"), getCookie("testName")).then ((agentInfo) => {
+                setCookie("accountId", agentInfo.accountGroupId);
+                setCookie("agentId", agentInfo.agentId);
+                setCookie("testId", agentInfo.testId);
+                teEndpointMetric(agentInfo.accountGroupId, agentInfo.agentId, agentInfo.testId);
+             })
+           
             setInterval(function() {
-              teEndpointMetric(); //teStatus ();
-            }, 10000); // 60 * 1000 milsec
+              teEndpointMetric(getCookie("accountId"), getCookie("agentId"), getCookie("testId"));
+            }, refreshS * 1000);
           </script>
         </div>
         
-      <!-- <div id="teSetup"> -->
       </div>
       
     </section>
-    <!-- <iframe frameborder="0" height="500px" width="800px"  src="https://embed.thousandeyes.com/e/223d7b01-1f53-41ed-a25b-ae2bd901bb8b"></iframe> -->
-</body>
+      
+  </body>
 </html>
 
  
