@@ -1,23 +1,30 @@
 # ThousandEyes Amazon Connect Widget
 
-This reference project illustrates how to integrate ThousandEyes metrics directly into an Amazon Connect streams endpoint, like the softphone. It includes the following folders:
+This reference project illustrates how to integrate ThousandEyes metrics directly into an Amazon Connect streams endpoint, like the CCP softphone. Integrating ThousandEyes metrics allows you display the health of each of your end-user's connection to Amazon Connect based on ThousandEyes monitoring.
+
+This reference project includes the following folders:
 
 * **client** - example client side code that shows how to display a ThousandEyes health metrics widget alongside Amazon Connect Streams soft phone. Includes sample HTML and CSS code that can be modified by the end user to fit their Amazon Connect client side deployment.
   
 * **service** - an AWS CloudFormation template that will deploy an API gateway service to allow the querying ThousandEyes API from the client frontend. This project includes a CloudFormationTemplate and Labmda-API Gateway service.
 
+Follow the steps below to monitor Amazon Connect with ThousandEyes Endpoint Agent and deploy the sample ThousandEyes widget to view end-user heath.
 # Setting Up ThousandEyes
 The following steps assume you have a ThousandEyes account. If you do not, you can sign-up for a 14-day free trial at https://www.thousandeyes.com/signup/.
 
-## Deploy and Configure ThousandEyes Endpoint Agent
+## Deploy and Configure ThousandEyes Endpoint Agents
 First you'll want to setup your ThousandEyes monitoring by deploying ThosuandEyes Endpoint Agents. ThousandEyes Endpoint Agents monitor network and app performance across the internet as well as collect device health. With Endpoint Agents installed on your Amazon Connect users' devices, you'll be able to quickly identify any network or device issues that may be impacting a user's experience of Amazon Connect.
 
-### Deploy ThousandEyes Endpoint Agents
 Follow the steps in this [Endpoint deployment guide](https://docs.thousandeyes.com/product-documentation/global-vantage-points/endpoint-agents/quick-guide-on-endpoint-agent#configuring-and-deploying-the-endpoint-agent) to install the ThousandEyes Endpoint agent on any Windows or MacOS based user device.
-1) For each deployed agent, note the Agent Name. You will use this when setting up the client widget below. The agent name is typically the device host name. For example: `hans-mac-us`
 
-### Configure ThousandEyes to Monitor Amazon Connect Service
-Once you've deployed at least one ThousandEyes Endpoint Agent you'll want to configure ThousandEyes to monitor Amazon Connect from those agents. To do this: 
+**Note** - for each deployed agent, note the Agent Name. You will use this when setting up the client widget below. The agent name is typically the device host name. For example: `hans-mac-us`
+
+## Configure ThousandEyes to Monitor Amazon Connect
+Once you've deployed at least one ThousandEyes Endpoint Agent you'll want to configure ThousandEyes to monitor Amazon Connect from those agents. 
+
+### Create a Scheduled Test
+First you'll need to create a "Scheduled Test".
+
 1) Log in to your ThousandEyes account at https://app.thousandeyes.com
 2) Select Endpoint Agent --> [Test Settings](https://app.thousandeyes.com/endpoint/test-settings/) 
 3) Select "Add New Test" and create a new "Web - HTTP Server" test
@@ -40,7 +47,7 @@ Next you'll want to enable session monitoring when the user is using the Amazon 
  
 ThousandEyes will now start running network monitoring to your Amazon Connect instance from each of the Endpoint Agents you installed and specified. It will also collect device health metrics that can be used alongside the network monitoring to quickly troubleshoot any issues that impact Amazon Connect services when users are using the Amazon Connect CCP soft phone.
 # Deploy the ThousandEyes Metrics Service
-Next, you'll deploy the ThousandEyes metrics service to you AWS cloud environment. This service will allow querying live metrics data from ThousandEyes for your Amazon Connect users. That data can then be displayed using the ThousandEyes client widget on each end-user device alongside the Amazon Connect CCP.  
+Next, you'll deploy the ThousandEyes metrics service to you AWS cloud environment. This service will expose an API that allows querying metrics data from ThousandEyes for your Amazon Connect users. That data can then be displayed using the ThousandEyes client widget on each end-user device alongside the Amazon Connect CCP.  
 ### Get your ThousandEyes API Token
 First you'll need to get your ThousandEyes API token which will be used to query metrics from ThousandEyes.  
    1) Log in to ThousandEyes and click on Account Settings -> Users and Roles -> Profile.
