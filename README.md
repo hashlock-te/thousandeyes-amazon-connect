@@ -1,10 +1,10 @@
-# thousandeyes-amazon-connect
+# ThousandEyes Amazon Connect Widget
 
-This reference project illustrates how to integrate ThousandEyes metrics directly into an Amazon Connect streams endpoint, like the softphone. It includes the following projects:
+This reference project illustrates how to integrate ThousandEyes metrics directly into an Amazon Connect streams endpoint, like the softphone. It includes the following folders:
 
-* **client** - example client side code that shows how to display ThousandEyes health metrics alongside Amazon Connect Streams soft phone. Includes sample HTML and CSS code that can be modified by the end user to fit their Amazon Connect client side deployment.
+* **client** - example client side code that shows how to display a ThousandEyes health metrics widget alongside Amazon Connect Streams soft phone. Includes sample HTML and CSS code that can be modified by the end user to fit their Amazon Connect client side deployment.
   
-* **thousandeyes-metrics-service** - an AWS CloudFormation template that will deploy an API gateway service to allow the querying ThousandEyes API from the client frontend. This  to query ThousandEyes metrics. This project includes a CloudFormationTemplate and Labmda-API Gateway service.
+* **service** - an AWS CloudFormation template that will deploy an API gateway service to allow the querying ThousandEyes API from the client frontend. This  to query ThousandEyes metrics. This project includes a CloudFormationTemplate and Labmda-API Gateway service.
 
 # Setting Up ThousandEyes
 The following steps assume you have a ThousandEyes account. If you do not, you can sign-up for a 14-day free trial at https://www.thousandeyes.com/signup/.
@@ -49,37 +49,43 @@ First you'll need to get your ThousandEyes API token which will be used to query
 ### Deploy the CloudFormation template
 Next, you'll need to deploy the service that will allow querying ThousandEyes metrics from your Amazon Connect streams client.
    1) Log in to your AWS account
-   2) Click on the following CloudFormation template link to deploy the ThousandEyes metrics service in your AWS account. https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=file://thousandeyes-amazon-connect/aws-deploy.json
+   2) Click on the following CloudFormation template link to deploy the ThousandEyes metrics service in your AWS account. https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://te-amazon-connect.s3.amazonaws.com/aws-deploy.yaml
    3) Fill in the following:
       1) ThousandEyes Username (email)
       2) ThousandEyes API Token (see above)
    4) Click deploy
-   5) Once deployed - copy the public API endpoint. Example: https://jur5bq3i8a.execute-api.us-east-1.amazonaws.com/dev/endpoint 
-
+   5) Once deployed - copy the public API endpoint. Example: https://jur5bq3i8a.execute-api.us-east-1.amazonaws.com/v1
+   
 # Embed the ThousandEyes Client Widget
-Lastly, you can use the included example client code to embed a ThousandEyes metrics widget on the same webpage that you embed the Amazon Connect CCP. 
-1) The **/client** folder contains an example `index.html` file and javascript that shows how to embed the ThousandEyes widget alongside the Amazon Connect CCP. Open the `index.html` file.
-1) Copy the url of your Amazon Connect instance and paste it into the `instanceURL` variable in `index.html`.
-1) Copy the url from the above CloudFormation template deployment and paste it into the `metricsURL` variable in `index.html`.
-For example:
+Lastly, you can use the included example client code in the `/client` folder to embed a ThousandEyes metrics widget on the same webpage that you embed the Amazon Connect CCP. 
+1) The `/client` folder contains an example `index.html` file and javascript that shows how to embed the ThousandEyes widget alongside the Amazon Connect CCP. Open the `index.html` file.
+2) Fill in the required variables:
+   * `instanceURL` - the url of your Amazon Connect instance
+   * `metricsURL` - the url of your ThousandEyes metrics API service you deployed in the above step
+   * `defaultHostName` - the default hostname that identifies the end user machichine; this should be the same name as the computer name reported by Endpoint agent in ThousandEyes
+   * `defaultTestName` - the name of the Endpoint scheduled test that monitors your Amazon Connect instance
+   * `defaultAccountGroup` - the ThousandEyes Account Group name that has the Amazon Connect test
+   * `refreshS` - the frequency to update metrics / health. Should not be less than 60 (seconds)
+
+Here is an example code snippet from `index.html`:
+
 ```html
-      <div id="ccpContainer1">
-        <script>
-          var instanceURL = "https://acmebusiness.my.connect.aws/connect/ccp#/";
-          var metricsURL = "https://bqnoz0b8ol.execute-api.us-east-1.amazonaws.com/v1/";
-          var container = document.getElementById("ccpContainer");
-          var ccpURL = instanceURL;
-          init();
-        </script>
-      </div>
+<div id="ccpContainer1">
+   <script>
+      var instanceURL = "https://acmebusiness.my.connect.aws/connect/ccp#/";
+      var metricsURL = "https://jur5bq3i8a.execute-api.us-east-1.amazonaws.com/v1";
+      var defaultHostName = "hans-mac-us";
+      var defaultAccountGroup = "Endpoint Agent";
+      var defaultTestName = "AWS Connect";
+      var refreshS = 60;
+      var container = document.getElementById("ccpContainer");
+      var ccpURL = instanceURL;
+      init();
+   </script>
+</div>
 ```
-1) Lastly, you'll need to specify the ThousandEyes account, test, and agent to pull metrics from. To do this, filling in the following variables in `index.html`:
-```javascript
-          var teAccount = "MyAccountGroup";
-          var teTest = "AmazonConnect";
-          var agent = "hans-mac-us";
-```
-2) The above code is an example. You can copy the contents of `index.html` as well as the `/js/common.js` file to your web server.
+
+The above code is an example. You can copy the contents of `index.html` as well as the `/js/common.js` file to your web server. You can also upload the contents of the `/client` folder to an AWS S3 bucket to run as an example static web page to see the widget in action.
 
 You should now be able to display the ThousandEyes widget on your Amazon Connect client webpage. Here's an example of the widget embedded below the default Amacon Connect CCP widget looks like:
 
