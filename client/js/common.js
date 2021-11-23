@@ -21,26 +21,26 @@ async function teAgentInfo (hostName, accountGroupName, testName) {
 
 async function teEndpointMetric (accountId, agentId, testId) {
   console.log("Querying ThousandEyes metrics...");
+  var health = -1;
   $.ajax({
     url: `${metricsURL}/http?aid=${accountId}&agentId=${agentId}&testId=${testId}`,
     method: "GET",
     crossDomain : true
   })
   .done(function(msg) {
-    var metric = msg.message.totalTime;
+    var metric = Number (msg.message.totalTime);
     $('#teServerResponse').html(`${metric} ms`);
-    switch (metric) {
-      case metric > 1000:
-        $('#teServerResponse').css("background-color", "red");
-        break;
-      case metric > 500:
-        $('#teServerResponse').css("background-color", "yellow");
-        break;
-      default:
-        $('#teServerResponse').css("background-color", "greenyellow");
-        break;
-    }
-    document.getElementById('teHealth').classList.add('green');
+    console.log(`metric ${metric}`);
+    if (metric > 1000) {
+      $('#teServerResponse').css("background-color", "red");
+      health = 0;
+    } else if (metric > 500) {
+      $('#teServerResponse').css("background-color", "yellow");
+      if (health > 0 || health < 0) health = 1;
+    } else if (metric >= 0) {
+      $('#teServerResponse').css("background-color", "greenyellow");
+      if (health > 1 || health < 0) health = 2;
+    } 
   })
   .fail(function (msg) {
     console.log("ThousandEyes query failed with response: " + JSON.stringify(msg));
@@ -55,21 +55,22 @@ async function teEndpointMetric (accountId, agentId, testId) {
     if (msg.message.wirelessProfile) {
       var quality = msg.message.wirelessProfile.quality;
       $('#teWifi').html(`${msg.message.wirelessProfile.quality} %`);
-      switch (quality) {
-        case quality < 50:
-          $('#teWifi').css("background-color", "red");
-          break;
-        case quality < 75:
-          $('#teWifi').css("background-color", "yellow");
-          break;
-        default:
-          $('#teWifi').css("background-color", "greenyellow");
-          break;
-      }
+  
+      if (quality < 50) {
+        $('#teWifi').css("background-color", "red");
+        health = 0;
+      } else if (quality < 75) {
+        $('#teWifi').css("background-color", "yellow");
+        if (health > 0 || health < 0) health = 1;
+      } else if (quality >= 75) {
+        $('#teWifi').css("background-color", "greenyellow");
+        if (health > 1 || health < 0) health = 2;
+      } 
     }
     else if (msg.message.hardwareType) {
       $('#teWifi').html(`${msg.message.hardwareType}`);
       $('#teWifi').css("background-color", "greenyellow");
+      if (health > 1 || health < 0) health = 2;
     }
   })
   .fail(function (msg) {
@@ -84,23 +85,38 @@ async function teEndpointMetric (accountId, agentId, testId) {
   })
   .done(function(msg) {
     if (msg.message.avgLatency) {
-      var latency = msg.message.avgLatency;
+      var latency = Number(msg.message.avgLatency);
       $('#teLatency').html(`${latency} mS`);
-      switch (latency) {
-        case latency > 300:
-          $('#teLatency').css("background-color", "red");
-          break;
-        case latency > 100:
-          $('#teLatency').css("background-color", "yellow");
-          break;
-        default:
-          $('#teLatency').css("background-color", "greenyellow");
-          break;
-      }
+      
+      if (latency > 300) {
+        $('#teLatency').css("background-color", "red");
+        health = 0;
+      } else if (latency > 100) {
+        $('#teLatency').css("background-color", "yellow");
+        if (health > 0 || health < 0) health = 1;
+      } else {
+        $('#teLatency').css("background-color", "greenyellow");
+        if (health > 1 || health < 0) health = 2;
+      } 
     } else {
       $('#teLatency').html(`- mS`);
       $('#teLatency').css("background-color", "#f2f2f2");
-      console.log (msg.message)
+    }
+
+    switch (health) {
+      case 2:
+        $('#teHealth').css("background-color", "greenyellow");
+        break;
+      case 1:
+        $('#teHealth').css("background-color", "yellow");
+        break;
+      case 0:
+        $('#teHealth').css("background-color", "red");
+        break;
+      default:
+        console.log('default');
+        $('#teHealth').css("background-color", "lightgray");
+        break;
     }
   })
   .fail(function (msg) {
