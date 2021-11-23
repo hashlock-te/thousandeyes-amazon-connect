@@ -4,7 +4,7 @@ This reference project illustrates how to integrate ThousandEyes metrics directl
 
 * **client** - example client side code that shows how to display a ThousandEyes health metrics widget alongside Amazon Connect Streams soft phone. Includes sample HTML and CSS code that can be modified by the end user to fit their Amazon Connect client side deployment.
   
-* **service** - an AWS CloudFormation template that will deploy an API gateway service to allow the querying ThousandEyes API from the client frontend. This  to query ThousandEyes metrics. This project includes a CloudFormationTemplate and Labmda-API Gateway service.
+* **service** - an AWS CloudFormation template that will deploy an API gateway service to allow the querying ThousandEyes API from the client frontend. This project includes a CloudFormationTemplate and Labmda-API Gateway service.
 
 # Setting Up ThousandEyes
 The following steps assume you have a ThousandEyes account. If you do not, you can sign-up for a 14-day free trial at https://www.thousandeyes.com/signup/.
