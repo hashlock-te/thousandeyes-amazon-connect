@@ -94,6 +94,11 @@ Here is an example code snippet from `index.html`:
 
 The above code is an example. You can copy the contents of `index.html` as well as the `/js/common.js` file to your web server. You can also upload the contents of the `/client` folder to an AWS S3 bucket to run as an example static web page to see the widget in action.
 
-You should now be able to display the ThousandEyes widget on your Amazon Connect client webpage. Here's an example of the widget embedded below the default Amacon Connect CCP widget looks like:
+You should now be able to display the ThousandEyes widget on your Amazon Connect client webpage. 
 
-![picture 5](readme/234f11324926ac530d2794d6f96d9f69dacd3fcc2cfa9205b2e873feaa6f09fc.png)  
+Here's an example what the example widget looks like embedded below the default Amazon Connect CCP widget:
+![ThousandEyes Widget](readme/68d7692526818e654e8634772345ad121e46fa73dfb1c1635a07158e3cbc6d11.png) 
+
+Clicking on the settings icon allows you to modify the ThousandEyes **Endpoint Agent** (Host Name), **Account Group**, and **Endpoint Schedule Test** (Test Name). The client side code will store these as cookies so they will not change on browser refresh.
+
+![ThousandEyes Widget](readme/af5f36ab4772f710f6a216dbfb4b7f0696e4d94adde5b53046d914deff3d16ce.png)  
