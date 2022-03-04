@@ -1,3 +1,4 @@
+
 async function teAgentInfo (hostName, accountGroupName, testName) {
   console.log("Querying /agentinfo...");
   let agentInfo = {};
@@ -124,25 +125,6 @@ async function teEndpointMetric (accountId, agentId, testId) {
   });
 }
 
-async function teStatus () {
-  console.log("TE Status");
-  $('#teResponse').html("Querying ThousandEyes...");
-  // getTEDate();
-  var resp = $.ajax({
-    url: `${metricsURL}/status`,
-    method: "GET",
-    crossDomain : true,
-  })
-  .done(function(msg) {
-    var json = JSON.stringify(msg);
-    $('#teResponse').html(json);
-  })
-  .fail(function (msg) {
-    console.log("Failed with response: " + JSON.stringify(msg));
-  });
-  
-}
-
 // Storing values locally allows us to set/get cookie values 
 // when running in a local dev environment.
 let cookieCache = {};
@@ -176,19 +158,3 @@ function getCookie (name) {
   }
   return val;
 }
-
-// function storageGet(keys) {
-//   return new Promise(function (resolve, reject) {
-//     chrome.storage.local.get(keys, function (items) {
-//       if (chrome.runtime.lastError) {
-//         reject(chrome.runtime.lastError.message);
-//       } else {
-//         if (items[keys] === undefined) {
-//           reject("Key does not exist in local storage.");
-//         } else {
-//           resolve(items[keys]);
-//         }
-//       }
-//     });
-//   });
-// }
