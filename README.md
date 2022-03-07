@@ -47,21 +47,27 @@ Next you'll want to enable session monitoring when the user is using the Amazon 
  
 ThousandEyes will now start running network monitoring to your Amazon Connect instance from each of the Endpoint Agents you installed and specified. It will also collect device health metrics that can be used alongside the network monitoring to quickly troubleshoot any issues that impact Amazon Connect services when users are using the Amazon Connect CCP soft phone.
 # Deploy the ThousandEyes Metrics Service
-Next, you'll deploy the ThousandEyes metrics service to you AWS cloud environment. This service will expose an API that allows querying metrics data from ThousandEyes for your Amazon Connect users. That data can then be displayed using the ThousandEyes client widget on each end-user device alongside the Amazon Connect CCP.  
+Next, you'll deploy the ThousandEyes metrics service to your AWS cloud environment. This service will deploy an API gateway and AWS Lambda code that allows you to query metrics data from ThousandEyes for your Amazon Connect users. That data can then be displayed using the ThousandEyes client widget on each end-user device alongside the Amazon Connect CCP.  
+
+### Create S3 Bucket and Upload Code Zip
+First, you'll need to create an S3 bucket in your AWS environment called `thousandeyes-aws-connect-service`. Upload the `thousandeyes-connect.zip` file to that bucket. If you want to use a different bucket you can provide the bucket name explicitly when deploying the teamplte.
 ### Get your ThousandEyes API Token
-First you'll need to get your ThousandEyes API token which will be used to query metrics from ThousandEyes.  
+Next, you'll need to get your ThousandEyes API token which will be used to query metrics from ThousandEyes.  
    1) Log in to ThousandEyes and click on Account Settings -> Users and Roles -> Profile.
    2) Your Basic Auth token is listed on the bottom of the page. If you do not have one yet, click "Regenerate"
 
 ### Deploy the CloudFormation template
-Next, you'll need to deploy the service that will allow querying ThousandEyes metrics from your Amazon Connect streams client.
+Lastly, deploy the API and Labmda code by deploying the included `deploy.yaml` CloudFormation template.
    1) Log in to your AWS account
-   2) Click on the following CloudFormation template link to deploy the ThousandEyes metrics service in your AWS account. https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://te-amazon-connect.s3.amazonaws.com/aws-deploy.yaml
+   2) Create a new CloudFormation stack
+      1) Select "Upload Template File" and upload the `/service/deploy.yaml` file
+      2) Click "Next"
    3) Fill in the following:
       1) ThousandEyes Username (email)
       2) ThousandEyes API Token (see above)
-   4) Click deploy
+   4) Click Deploy
    5) Once deployed - copy the public API endpoint. Example: https://jur5bq3i8a.execute-api.us-east-1.amazonaws.com/v1
+      1) You can find this URL value under the "Outputs" tab, `ServiceEndpoint`
    
 # Embed the ThousandEyes Client Widget
 Lastly, you can use the included example client code in the `/client` folder to embed a ThousandEyes metrics widget on the same webpage that you embed the Amazon Connect CCP. 
